@@ -1,5 +1,5 @@
 USTH DS 2024 Machine Learning in Medicine
-=====================================================
+=========================================
 
 Students are expected to:
 
@@ -8,9 +8,8 @@ Students are expected to:
 * Push your commits regularly, with proper commit messages
 
 Student Info
-=======================
+============
 
-* Name: *YourNameHere*
-* ID: *YourIdHere*
+* Name: Nguyễn Xuân Tùng
+* ID: BI12-479
 * Group ID: *Your Group ID here*
-
