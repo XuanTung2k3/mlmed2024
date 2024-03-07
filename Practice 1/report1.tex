@@ -1,0 +1,140 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\title{A Study of ECG Heartbeat Categorization}
+\author{Nguyen Xuan Tung - BI12-479}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\section{Introduction}
+% Write your introduction here
+
+This report presents the results of my study on ECG heartbeat categorization taken from Kaggle. 
+The data used in this study is the MIT-BIH Arrhythmia Database.
+I tried to analyze on the data and apply 5 models based on Random Forest, CNN and RNN to classify 5 types of heartbeats. 
+
+\section{Data Analysis}
+% Describe your data and how you analyzed it. Include any relevant figures or tables.
+% For example, to include a figure, use the following code:
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.5\textwidth]{path_to_your_figure}
+% \caption{Caption for your figure}
+% \end{figure}
+The data used in this study is the MIT-BIH Arrhythmia Database.
+The data consists of 5 types of heartbeats: Normal, Supraventricular, Ventricular, Fusion and Unknown, 
+which are encoded to 0, 1, 2, 3 and 4 respectively. Each data contains 187 values of the heartbeat signal.\\ 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{Frequency of each class in the dataset.png}
+\caption{Frequency of each class in the dataset}
+\end{figure}
+
+\noindent As we can see from the histogram at figure 1,
+the training dataset in Kaggle is extremely bias to
+the Normal class, which is the most common type of heartbeat. 
+This biasness can lead to the model being overfitted to the Normal class.\\
+
+
+\noindent To avoid overfitting, the up-sample technique to balance the dataset was used.
+When divided the total number of files in the training dataset by 5,
+I obtained about 17510. So I balanced the dataset by sampling each class to have 17500 samples in each class.\\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{Frequency of each class in the dataset after balancing.png}
+\caption{Frequency of each class in the dataset after balancing}
+\end{figure}
+
+\noindent Besides, I also split the test dataset in Kaggle into 2 parts: 50\% for validation and 50\% for testing.
+The distributions of 2 these datasets can be seen in the figure 3. \\
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{Frequency of each class in the valid and test dataset.png}
+\caption{Frequency of each class in the valid and test dataset}
+\end{figure}
+    
+
+\section{Model}
+% Describe the model you used for categorization. Include any relevant equations or figures.
+% For example, to include an equation, use the following code:
+% \begin{equation}
+% Your equation here
+% \end{equation}
+For categorization tasks, I tried to implement 5 different classification models which 
+take the 187 values of the heartbeat signal as input and output the category of the heartbeat.
+% 1st part: Random Forest Model
+\subsection{Random Forest}
+The first model I used is Random Forest Model,
+because it is a non high cost model for classifying structure data. 
+When processing this model, it is not using the validation dataset.
+The number of estimators is 100 while I choose 42 for the random state.
+
+
+\subsection{Convolutional Neural Network}
+I tried to implement a simple convolutional neural network due to 
+the powerful of the concept of convolution operation combined deep learning model which seem to be
+useful for signal processing in these days. The network contains three 1D convolutional layers 
+for feature extraction of the signal and two fully connected layers.
+
+\subsection{Convolutional Neural Network with Residual Connection}
+The third model is a convolutional neural network with 1 first Conv1D layer and 5 residual blocks. 
+The reason I used this model is that the skip connection can help it to prevent the vanishing gradient 
+problem, which avoids the model from being overfitted. Besides, I also add some special layers such as
+BatchNormalization and Dropout to improve the model's performance.
+
+\subsection{Recurrent Neural Network}
+Besides using CNNs-based model, a recurrent neural network with 3 recurrent layers and 3 fully connected layers
+is also be used. The reason I used this model is that an RNN model can capture the long-term dependencies in the 
+sequence data, which is the characteristic of the ECG signal. 
+
+\subsection{Recurrent Neural Network with Residual Connection}
+Similarity to the idea of CNN with residual connection, 
+I also tried to leverage an RNN model with residual connection.
+
+\section{Evaluation and Results}
+% Describe how you evaluated your model and what the results were. Include any relevant figures or tables.
+% For example, to include a table, use the following code:
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{|c|c|}
+% \hline
+% Column 1 & Column 2 \\
+% \hline
+% Data 1 & Data 2 \\
+% \hline
+% \end{tabular}
+% \caption{Caption for your table}
+% \end{table}
+
+\subsection{Loss Track of Deep Learning Models}
+% Put 4 figures of the loss track of the models in 2 rows and 2 columns 
+% by creating table
+\begin{table}[h]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.4\textwidth]{Loss CNN.png} & \includegraphics[width=0.4\textwidth]{Loss RNN.png} \\
+\includegraphics[width=0.4\textwidth]{Loss CNN Residual.png} & \includegraphics[width=0.4\textwidth]{Loss RNN Residual.png} \\    
+\end{tabular}
+\caption{Loss track of the Deep Learning models}
+\end{table}
+As can be seen from the plots of loss for all models, the train loss of all models are decreased nearly to 0.
+However, the CNN with Residual Connection seems to tackle the overfitting problem.
+The reasons for that is easily understand by the mechanism of Residual Block which is avoiding the vanishing gradient problem.
+
+\subsection{Confusion Matrices of all Models}
+For the results recorded in the testing dataset, CNN with Residual Connection also shows the best prediction for unseen data.
+% Put 5 figures of the confusion matrices of the models in 2 rows and 3 columns
+\begin{table}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.3\textwidth]{Confusion Matrix Random Forest.png} & \includegraphics[width=0.3\textwidth]{Confusion Matrix CNN.png} & \includegraphics[width=0.3\textwidth]{Confusion Matrix CNN Residual.png} \\
+\includegraphics[width=0.3\textwidth]{Confusion Matrix RNN.png} & \includegraphics[width=0.3\textwidth]{Confusion Matrix RNN Residual.png} & \\
+\end{tabular}
+\caption{Confusion Matrices of all Models}
+\end{table}
+ 
+
+\end{document}
