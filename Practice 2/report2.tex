@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\title{A Study of Automated measurement of fetal head circumference using 2D ultrasound images}
+\author{Nguyen Xuan Tung - BI12-479}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\section{Introduction}
+% Write your introduction here
+In this assignment, I tried to implement some U-Net models with different loss functions to 
+detect the head boundary in 2D ultrasound images, and then measure the head circumference.
+
+\section{Data Analysis}
+The dataset used in this study is the HC18 dataset. The training dataset consists of 999 2D ultrasound images of fetal head 
+and the corresponding ground truth masks, whereas the test dataset consists of 335 2D ultrasound images of fetal head with no labels.
+For training the model, 80\% of the training dataset will be used for training, 10\% for validation, and 10\% for testing to  
+evaluate the model.\\ 
+
+\section{Model}
+Instead of building a model for segmentation, I used the U-Net model with different loss functions 
+to generate new images of only the head boundary like the ground truth masks. After that, I utilized
+some image processing techniques to determine the contour of the head boundary and measure the head circumference.
+
+\subsection{U-Net Architecture}
+The U-Net model is a convolutional neural network for fast and precise segmentation of images.
+The architecture contains two paths: the contraction path (encoder) and the symmetric expanding path (decoder).
+The encoder is used to capture the context of the input image, while the decoder is used to enable precise localization.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.3\textwidth]{u-net.jpg}
+    \caption{U-Net Architecture}
+\end{figure}
+
+\subsection{Loss Functions}
+I used three loss functions to train the U-Net model: mean squared error (MSE), binary cross-entropy (BCE), 
+and binary cross entropy combined with Intersection over Union (BCE + IoU). 
+Firstly, the MSE loss function is used to measure the average of the squares of the errors between the predicted and ground truth masks. 
+Next, I used the BCE loss function to measure the difference between the predicted and ground truth masks. 
+Finally, a combination of BCE and IoU loss functions is an attempt to improve the performance of the model.
+The combination loss function is defined as follows:
+% combined_loss = self.alpha * self.bce(inputs, targets) + (1 - self.alpha) * self.iou(inputs, targets)
+\begin{equation}
+    MSE\_IoU = \alpha * BCE + (1 - \alpha) * IoU
+\end{equation}
+
+\section{Results}
+\subsection{For detecting the head boundary}
+Observing the loss values of the U-Net model with different loss functions, model with MSE loss has a decrease in loss value over time,
+while other cases didn't have significant changes in loss values.
+% Plot 3 pictures of loss values in rows
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccc}
+        % \includegraphics[width=0.3\textwidth]{MSE_loss.png} & 
+        \includegraphics[width=0.3\textwidth]{BCE_loss.png} & 
+        \includegraphics[width=0.3\textwidth]{bce_iou_loss.png} \\
+        (a) MSE loss & (b) BCE loss & (c) MSE + IoU loss
+    \end{tabular}
+    \caption{Loss values of the U-Net model with different loss functions}
+
+The U-Net model with MSE loss function seemed to achieve the best performance with the lowest MAE values in the metric evaluation.
+
+
+\end{document}
